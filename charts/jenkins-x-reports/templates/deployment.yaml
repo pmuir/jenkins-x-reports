@@ -21,6 +21,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: {{ .Values.service.reportVolumeName }}
+          mountPath: {{ .Values.service.reportMountPath }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
@@ -40,4 +43,8 @@ spec:
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      volumes:
+      - name: {{ .Values.service.reportVolumeName }}
+        emptyDir: {}}
