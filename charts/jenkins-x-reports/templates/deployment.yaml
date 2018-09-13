@@ -26,6 +26,7 @@ spec:
           mountPath: {{ .Values.service.reportMountPath }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+          containerPort: {{ .Values.serviceUpload.internalPort }}
         livenessProbe:
           httpGet:
             path: {{ .Values.probePath }}
