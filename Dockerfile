@@ -1,4 +1,4 @@
-FROM scratch
+FROM centos:latest
 EXPOSE 8080
 EXPOSE 8081
 ENTRYPOINT ["/jenkins-x-reports"]
