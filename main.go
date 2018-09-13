@@ -10,7 +10,8 @@ import (
 )
 
 const maxUploadSize = 2 * 1024 // 2 MB
-const uploadPath = "/reports"
+const uploadPath = "/Users/pmuir/tmp/reports"
+const staticPath = "/Users/pmuir/tmp/static"
 const downloadPort = 8080
 const uploadPort = 8081
 const bind = "0.0.0.0"
@@ -21,15 +22,17 @@ func main() {
 }
 
 func downloadServer() {
-	fs := http.FileServer(http.Dir(uploadPath))
-
+	server:= http.NewServeMux()
+	server.Handle("/", http.FileServer(http.Dir(uploadPath)))
 	log.Printf("Download server listening on %s:%d\n", bind, downloadPort)
-	http.ListenAndServe(fmt.Sprintf("%s:%d", bind, downloadPort), fs)
+	http.ListenAndServe(fmt.Sprintf("%s:%d", bind, downloadPort), server)
 }
 
 func uploadServer() {
+	server:= http.NewServeMux()
+	server.HandleFunc("/", uploadFileHandler())
 	log.Printf("Upload server listening on %s:%d\n", bind, uploadPort)
-	http.ListenAndServe(fmt.Sprintf("%s:%d", bind, uploadPort), uploadFileHandler())
+	http.ListenAndServe(fmt.Sprintf("%s:%d", bind, uploadPort), server)
 }
 
 func uploadFileHandler() http.HandlerFunc {
