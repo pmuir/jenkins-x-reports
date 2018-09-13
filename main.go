@@ -16,8 +16,8 @@ const uploadPort = 8081
 const bind = "0.0.0.0"
 
 func main() {
-	downloadServer()
 	go uploadServer()
+	downloadServer()
 }
 
 func downloadServer() {
