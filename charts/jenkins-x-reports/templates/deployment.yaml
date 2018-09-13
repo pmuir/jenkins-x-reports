@@ -47,4 +47,4 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
       - name: {{ .Values.service.reportVolumeName }}
-        emptyDir: {}}
+        emptyDir: {}
