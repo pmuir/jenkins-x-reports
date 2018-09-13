@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-const maxUploadSize = 2 * 1024 // 2 MB
+const maxUploadSize = 2 * 1024 * 1024 // 2 MB
 const uploadPath = "/reports"
 const downloadPort = 8080
 const uploadPort = 8081
