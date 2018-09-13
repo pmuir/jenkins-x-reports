@@ -39,34 +39,46 @@ func uploadFileHandler() http.HandlerFunc {
 		// validate file size
 		r.Body = http.MaxBytesReader(w, r.Body, maxUploadSize)
 		if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+			log.Println(err)
 			renderError(w, "FILE_TOO_BIG", http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 
 		// parse and validate file and post parameters
-		file, _, err := r.FormFile("uploadFile")
+		file, _, err := r.FormFile("upload")
 		if err != nil {
 			renderError(w, "INVALID_FILE", http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 		defer file.Close()
 		fileBytes, err := ioutil.ReadAll(file)
 		if err != nil {
 			renderError(w, "INVALID_FILE", http.StatusBadRequest)
+			log.Println(err)
 			return
 		}
 		newPath := filepath.Join(uploadPath, r.URL.Path)
-		fmt.Printf("File: %s\n", newPath)
 
+		dir, _ := filepath.Split(newPath)
+		err = os.MkdirAll(dir, os.FileMode(0755))
+		if err != nil {
+			renderError(w, "CANT_CREATE_DIR", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 		// write file
 		newFile, err := os.Create(newPath)
 		if err != nil {
 			renderError(w, "CANT_WRITE_FILE", http.StatusInternalServerError)
+			log.Println(err)
 			return
 		}
 		defer newFile.Close() // idempotent, okay to call twice
 		if _, err := newFile.Write(fileBytes); err != nil || newFile.Close() != nil {
 			renderError(w, "CANT_WRITE_FILE", http.StatusInternalServerError)
+			log.Println(err)
 			return
 		}
 		w.Write([]byte("SUCCESS"))
