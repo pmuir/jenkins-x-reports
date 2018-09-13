@@ -10,7 +10,7 @@ import (
 )
 
 const maxUploadSize = 2 * 1024 // 2 MB
-const uploadPath = "/Users/pmuir/tmp/reports"
+const uploadPath = "/reports"
 const downloadPort = 8080
 const uploadPort = 8081
 const bind = "0.0.0.0"
