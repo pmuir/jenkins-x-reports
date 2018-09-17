@@ -89,8 +89,13 @@ func uploadFileHandler() http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-		if r.Header.Get("Content-Type") == "text/vnd.junit-xml" {
-			sendToElasticSearch(r.Body, r.URL.Path)
+		h := r.Header.Get("X-Content-Type")
+		if h == "text/vnd.junit-xml" {
+			err = sendToElasticSearch(r.Body, r.URL.Path)
+			if err != nil {
+				renderError(w, "CANT_SEND_TO_ELASTICSEATCH", http.StatusInternalServerError)
+				log.Println(err)
+			}
 		}
 		w.Write([]byte("SUCCESS"))
 
