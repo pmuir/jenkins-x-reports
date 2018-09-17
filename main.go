@@ -198,9 +198,9 @@ func toJson(json []byte, org string, appName string, version string) ([]byte, er
 
 	utc, _ := time.LoadLocation("UTC")
 	data := map[string]interface{} {
-		"org": os.Getenv(org),
-		"appName": os.Getenv(appName),
-		"version": os.Getenv(version),
+		"org": org,
+		"appName": appName,
+		"version": version,
 		"errors": m.ValueOrEmptyForPathString("testsuite.-errors"),
 		"failures": m.ValueOrEmptyForPathString("testsuite.-failures"),
 		"testsuiteName": m.ValueOrEmptyForPathString("testsuite.-name"),
