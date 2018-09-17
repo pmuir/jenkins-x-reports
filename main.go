@@ -31,10 +31,10 @@ const cmNamespace = "jx"
 
 func main() {
 	var client kubernetes.Interface
-	//client, err := createKubernetesClient()
-	//if err != nil {
-	//	panic(err)
-	//}
+	client, err := createKubernetesClient()
+	if err != nil {
+		panic(err)
+	}
 	go uploadServer(client)
 	downloadServer()
 }
