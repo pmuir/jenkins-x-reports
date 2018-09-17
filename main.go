@@ -124,7 +124,7 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 				renderError(w, "CANT_READ_FILE", http.StatusInternalServerError)
 				log.Println(err)
 			}
-			err = sendToElasticSearch(reader, r.URL.Path)
+			err = sendToElasticSearch(reader, org, app, version, r.URL.Path)
 			if err != nil {
 				renderError(w, "CANT_SEND_TO_ELASTICSEATCH", http.StatusInternalServerError)
 				log.Println(err)
@@ -152,12 +152,12 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 	})
 }
 
-func sendToElasticSearch(reader io.Reader, path string) error {
+func sendToElasticSearch(reader io.Reader, org string, appName string, version string, path string) error {
 	_, json, err := x2j.XmlReaderToJson(reader)
 	if err != nil {
 		return err
 	}
-	json, err = toJson(json)
+	json, err = toJson(json, org, appName, version)
 	fmt.Printf("Successfully annnotated JUnit result with build info\n")
 	if err != nil {
 		return err
@@ -185,7 +185,7 @@ func sendToElasticSearch(reader io.Reader, path string) error {
 	return nil
 }
 
-func toJson(json []byte) ([]byte, error) {
+func toJson(json []byte, org string, appName string, version string) ([]byte, error) {
 	m, err := mxj.NewMapJson(json)
 	if err != nil {
 		return nil, err
@@ -198,9 +198,9 @@ func toJson(json []byte) ([]byte, error) {
 
 	utc, _ := time.LoadLocation("UTC")
 	data := map[string]interface{} {
-		"org": os.Getenv("ORG"),
-		"appName": os.Getenv("APP_NAME"),
-		"version": os.Getenv("VERSION"),
+		"org": os.Getenv(org),
+		"appName": os.Getenv(appName),
+		"version": os.Getenv(version),
 		"errors": m.ValueOrEmptyForPathString("testsuite.-errors"),
 		"failures": m.ValueOrEmptyForPathString("testsuite.-failures"),
 		"testsuiteName": m.ValueOrEmptyForPathString("testsuite.-name"),
