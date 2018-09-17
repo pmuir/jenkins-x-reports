@@ -26,7 +26,7 @@ const uploadPath = "/reports"
 const downloadPort = 8080
 const uploadPort = 8081
 const bind = "0.0.0.0"
-const url = "http://jenkins-x-reports-elasticsearch-client:9200/tests/junit/"
+const url = "http://jenkins-x-reports-elasticsearch-client.jx:9200/tests/junit/"
 const cmNamespace = "jx"
 
 func main() {
