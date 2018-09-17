@@ -257,7 +257,7 @@ func updateConfigMap(cm *corev1.ConfigMap, version string, filename string, url 
 	if cm.Data[version] == "" {
 		cm.Data[version] = fmt.Sprintf("|-\n")
 	}
-	cm.Data[version] = fmt.Sprintf("%s\n    %s: %s\n", filename, url)
+	cm.Data[version] = fmt.Sprintf("%s\n    %s: %s\n", cm.Data[version], filename, url)
 	return client.CoreV1().ConfigMaps(cmNamespace).Update(cm)
 }
 
