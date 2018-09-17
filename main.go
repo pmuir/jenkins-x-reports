@@ -95,7 +95,7 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-		filename, _ := filepath.Split(r.URL.Path)
+		_, filename := filepath.Split(r.URL.Path)
 		newDir := filepath.Join(uploadPath, org, app, version)
 		newPath := filepath.Join(newDir, filename)
 
