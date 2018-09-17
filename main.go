@@ -30,10 +30,11 @@ const url = "http://jenkins-x-reports-elasticsearch-client:9200/tests/junit/"
 const cmNamespace = "jx"
 
 func main() {
-	client, err := createKubernetesClient()
-	if err != nil {
-		panic(err)
-	}
+	var client kubernetes.Interface
+	//client, err := createKubernetesClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	go uploadServer(client)
 	downloadServer()
 }
@@ -119,7 +120,12 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 			return
 		}
 		if r.Header.Get("X-Content-Type") == "text/vnd.junit-xml" {
-			err = sendToElasticSearch(r.Body, r.URL.Path)
+			reader, err := os.Open(newPath)
+			if err != nil {
+				renderError(w, "CANT_READ_FILE", http.StatusInternalServerError)
+				log.Println(err)
+			}
+			err = sendToElasticSearch(reader, r.URL.Path)
 			if err != nil {
 				renderError(w, "CANT_SEND_TO_ELASTICSEATCH", http.StatusInternalServerError)
 				log.Println(err)
@@ -212,7 +218,7 @@ func createKubernetesClient() (kubernetes.Interface, error) {
 	if err != nil {
 		return nil, err
 	}
-	// creates the clientset
+	// creates the client
 	client, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return nil, err
