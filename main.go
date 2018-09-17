@@ -141,7 +141,7 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 			log.Println(err)
 		}
 
-		url := fmt.Sprintf("%s/%s", reportHost, newPath)
+		url := fmt.Sprintf("%s/%s/%s/%s/%s", reportHost, org, app, version, filename)
 		cm, err = updateConfigMap(cm, version, filename, url, client )
 		if err != nil {
 			renderError(w, "ERROR_UPDATING_CONFIG_MAP", http.StatusInternalServerError)
