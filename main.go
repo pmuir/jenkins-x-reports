@@ -221,7 +221,7 @@ func createKubernetesClient() (kubernetes.Interface, error) {
 }
 
 func getOrCreateConfigMap(org string, app string, client kubernetes.Interface) (*corev1.ConfigMap, error) {
-	cmName := fmt.Sprintf("%s-%s-test-reports")
+	cmName := fmt.Sprintf("%s-%s-test-reports", org, app)
 	cm, err := client.CoreV1().ConfigMaps(cmNamespace).Get(cmName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
