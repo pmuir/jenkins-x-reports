@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"log"
@@ -143,9 +142,9 @@ func uploadFileHandler(client kubernetes.Interface) http.HandlerFunc {
 		}
 
 		url := fmt.Sprintf("%s/%s", reportHost, newPath)
-		cm, err = patchConfigMap(cm, version, filename, url, client )
+		cm, err = updateConfigMap(cm, version, filename, url, client )
 		if err != nil {
-			renderError(w, "ERROR_CREATING_CONFIG_MAP", http.StatusInternalServerError)
+			renderError(w, "ERROR_UPDATING_CONFIG_MAP", http.StatusInternalServerError)
 			log.Println(err)
 		}
 		w.Write([]byte("SUCCESS"))
@@ -253,14 +252,13 @@ func getOrCreateConfigMap(org string, app string, client kubernetes.Interface) (
 	return cm, nil
 }
 
-func patchConfigMap(cm *corev1.ConfigMap, version string, filename string, url string, client kubernetes.Interface) (*corev1.ConfigMap, error){
-	existing, exists := cm.Data[version]
-	patch := fmt.Sprintf("    %s: %s", filename, url)
-	if exists {
-		patch = fmt.Sprintf("%s\n%s", existing, patch)
+func updateConfigMap(cm *corev1.ConfigMap, version string, filename string, url string, client kubernetes.Interface) (*corev1.ConfigMap, error){
+	fmt.Printf("Updating %s with data for %s and Data %s\n", cm.Name, version, cm.Data )
+	if cm.Data[version] == "" {
+		cm.Data[version] = fmt.Sprintf("|-\n")
 	}
-	patch = fmt.Sprintf(  "  %s: |-\n%s", version, patch )
-	return client.CoreV1().ConfigMaps(cmNamespace).Patch(cm.Name, types.StrategicMergePatchType, []byte(patch))
+	cm.Data[version] = fmt.Sprintf("%s\n    %s: %s\n", filename, url)
+	return client.CoreV1().ConfigMaps(cmNamespace).Update(cm)
 }
 
 func getReportHost(client kubernetes.Interface) (string, error) {
