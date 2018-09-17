@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/clbanning/mxj"
 	"github.com/clbanning/mxj/x2j"
-	"github.com/jenkins-x/jx/pkg/kube"
 	"io"
 	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
