@@ -93,6 +93,20 @@
   revision = "9cad4c3443a7200dd6400aef47183728de563a38"
 
 [[projects]]
+  digest = "1:01c4fd4eb75f19afaff1b47a9f018e141ab21b0d839c8d8fe59b02b54e9a0f17"
+  name = "github.com/jenkins-x/jx"
+  packages = [
+    "pkg/apis/jenkins.io",
+    "pkg/apis/jenkins.io/v1",
+    "pkg/client/clientset/versioned",
+    "pkg/client/clientset/versioned/scheme",
+    "pkg/client/clientset/versioned/typed/jenkins.io/v1",
+  ]
+  pruneopts = "UT"
+  revision = "94011e1eedabc7e234215c00ee8c945223448b16"
+  version = "v1.3.278"
+
+[[projects]]
   digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
   name = "github.com/json-iterator/go"
   packages = ["."]
@@ -356,9 +370,9 @@
   input-imports = [
     "github.com/clbanning/mxj",
     "github.com/clbanning/mxj/x2j",
+    "github.com/jenkins-x/jx/pkg/client/clientset/versioned",
     "k8s.io/api/core/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
-    "k8s.io/apimachinery/pkg/types",
     "k8s.io/client-go/kubernetes",
     "k8s.io/client-go/rest",
   ]
